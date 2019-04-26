@@ -616,6 +616,7 @@ cdef extern from "scip/scip.h":
     SCIP_RETCODE SCIPchgVarObj(SCIP* scip, SCIP_VAR* var, SCIP_Real newobj)
     SCIP_RETCODE SCIPchgVarLb(SCIP* scip, SCIP_VAR* var, SCIP_Real newbound)
     SCIP_RETCODE SCIPchgVarUb(SCIP* scip, SCIP_VAR* var, SCIP_Real newbound)
+    SCIP_RETCODE SCIPchgVarUbLazy(SCIP* scip, SCIP_VAR* var, SCIP_Real newbound)
     SCIP_RETCODE SCIPchgVarLbGlobal(SCIP* scip, SCIP_VAR* var, SCIP_Real newbound)
     SCIP_RETCODE SCIPchgVarUbGlobal(SCIP* scip, SCIP_VAR* var, SCIP_Real newbound)
     SCIP_RETCODE SCIPchgVarLbNode(SCIP* scip, SCIP_NODE* node, SCIP_VAR* var, SCIP_Real newbound)

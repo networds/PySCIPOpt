@@ -1153,16 +1153,21 @@ cdef class Model:
            lb = -SCIPinfinity(self._scip)
         PY_SCIP_CALL(SCIPchgVarLb(self._scip, var.scip_var, lb))
 
-    def chgVarUb(self, Variable var, ub):
+    def chgVarUb(self, Variable var, ub, lazy=False):
         """Changes the upper bound of the specified variable.
 
         :param Variable var: variable to change bound of
         :param ub: new upper bound (set to None for +infinity)
+        :param lazy: switch for changing strict or lazy upper bound
 
         """
         if ub is None:
            ub = SCIPinfinity(self._scip)
-        PY_SCIP_CALL(SCIPchgVarUb(self._scip, var.scip_var, ub))
+        if lazy:
+            # taken from branch use-probdata-to-store-model
+            PY_SCIP_CALL(SCIPchgVarUbLazy(self._scip, var.scip_var, ub))
+        else:
+            PY_SCIP_CALL(SCIPchgVarUb(self._scip, var.scip_var, ub))
 
 
     def chgVarLbGlobal(self, Variable var, lb):
