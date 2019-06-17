@@ -712,6 +712,8 @@ cdef extern from "scip/scip.h":
     SCIP_Bool SCIPconsIsDynamic(SCIP_CONS* cons)
     SCIP_Bool SCIPconsIsRemovable(SCIP_CONS* cons)
     SCIP_Bool SCIPconsIsStickingAtNode(SCIP_CONS* cons)
+    SCIP_Bool SCIPconsIsActive(SCIP_CONS* cons)
+    SCIP_Bool SCIPconsIsEnabled(SCIP_CONS* cons)
     SCIP_CONSDATA* SCIPconsGetData(SCIP_CONS* cons)
     SCIP_CONSHDLR* SCIPconsGetHdlr(SCIP_CONS* cons)
     const char* SCIPconshdlrGetName(SCIP_CONSHDLR* conshdlr)
