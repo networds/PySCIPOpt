@@ -689,6 +689,16 @@ cdef class Constraint:
         constype = bytes(SCIPconshdlrGetName(SCIPconsGetHdlr(self.scip_cons))).decode('UTF-8')
         return constype == 'quadratic'
 
+    def isActive(self):
+        """Retrieve True if constraint is active in the current node"""
+        return SCIPconsIsActive(self.scip_cons)
+
+    def isEnabled(self):
+        """Retrieve True if constraint is enabled in the current node"""
+        return SCIPconsIsEnabled(self.scip_cons)
+
+
+
 
 cdef void relayMessage(SCIP_MESSAGEHDLR *messagehdlr, FILE *file, const char *msg):
     sys.stdout.write(msg.decode('UTF-8'))
