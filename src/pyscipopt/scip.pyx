@@ -1821,8 +1821,10 @@ cdef class Model:
         """
         if isinstance(validnode, Node):
             PY_SCIP_CALL(SCIPaddConsNode(self._scip, node.scip_node, cons.scip_cons, validnode.scip_node))
+            Py_INCREF(cons)
         else:
             PY_SCIP_CALL(SCIPaddConsNode(self._scip, node.scip_node, cons.scip_cons, NULL))
+            Py_INCREF(cons)
 
     def addConsLocal(self, Constraint cons, Node validnode=None):
         """Add a constraint to the current node
