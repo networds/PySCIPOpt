@@ -711,6 +711,16 @@ cdef class Constraint:
         constype = bytes(SCIPconshdlrGetName(SCIPconsGetHdlr(self.scip_cons))).decode('UTF-8')
         return constype == 'quadratic'
 
+    def isActive(self):
+        """Retrieve True if constraint is active in the current node"""
+        return SCIPconsIsActive(self.scip_cons)
+
+    def isEnabled(self):
+        """Retrieve True if constraint is enabled in the current node"""
+        return SCIPconsIsEnabled(self.scip_cons)
+
+
+
 
 cdef void relayMessage(SCIP_MESSAGEHDLR *messagehdlr, FILE *file, const char *msg):
     sys.stdout.write(msg.decode('UTF-8'))
@@ -1268,16 +1278,21 @@ cdef class Model:
            lb = -SCIPinfinity(self._scip)
         PY_SCIP_CALL(SCIPchgVarLb(self._scip, var.scip_var, lb))
 
-    def chgVarUb(self, Variable var, ub):
+    def chgVarUb(self, Variable var, ub, lazy=False):
         """Changes the upper bound of the specified variable.
 
         :param Variable var: variable to change bound of
         :param ub: new upper bound (set to None for +infinity)
+        :param lazy: switch for changing strict or lazy upper bound
 
         """
         if ub is None:
            ub = SCIPinfinity(self._scip)
-        PY_SCIP_CALL(SCIPchgVarUb(self._scip, var.scip_var, ub))
+        if lazy:
+            # taken from branch use-probdata-to-store-model
+            PY_SCIP_CALL(SCIPchgVarUbLazy(self._scip, var.scip_var, ub))
+        else:
+            PY_SCIP_CALL(SCIPchgVarUb(self._scip, var.scip_var, ub))
 
 
     def chgVarLbGlobal(self, Variable var, lb):
@@ -1848,8 +1863,10 @@ cdef class Model:
         """
         if isinstance(validnode, Node):
             PY_SCIP_CALL(SCIPaddConsNode(self._scip, node.scip_node, cons.scip_cons, validnode.scip_node))
+            Py_INCREF(cons)
         else:
             PY_SCIP_CALL(SCIPaddConsNode(self._scip, node.scip_node, cons.scip_cons, NULL))
+            Py_INCREF(cons)
 
     def addConsLocal(self, Constraint cons, Node validnode=None):
         """Add a constraint to the current node
